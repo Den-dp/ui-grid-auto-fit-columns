@@ -104,8 +104,8 @@ export class UiGridAutoFitColumnsService {
                 let formatedCell;
                 const rawText = get(row.entity, columnKey, row.entity[column.field]);
 
-                if(!!column.cellFilter){
-                    formatedCell = this.getFilteredValue(rawText, column.cellFilter);
+                if(!!column.colDef.cellFilter){
+                    formatedCell = this.getFilteredValue(rawText, column.colDef.cellFilter);
                 }
 
                 const currentCellWidth = Measurer.measureTextWidth(formatedCell || rawText, font);
