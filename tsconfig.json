@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es5",
+        "sourceMap": true,
+        "outDir": "./",
+        "removeComments": false,
+        "noImplicitAny": false,
+        "noEmitHelpers": false,
+        "moduleResolution": "node"
+    },
+    "files": [
+        "typings/index.d.ts",
+        "src/index.ts",
+        "src/UiGridAutoFitColumnsService.ts",
+        "src/UiGridAutoFitColumnsDirective.ts"
+    ]
+}

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../node_modules/angular-ui-grid/ui-grid.css">
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+    </style>
+</head>
+<body ng-strict-di ng-app="app">
+
+<div ui-grid="gridOptions" ui-grid-auto-fit-columns ui-grid-pagination ui-grid-resize-columns style="height: 99vh"></div>
+<button ng-click="reload()" style="position:absolute;left:50%;bottom:0;">Reload</button>
+
+<script src="../node_modules/angular/angular.js"></script>
+<script src="../node_modules/angular-ui-grid/ui-grid.js"></script>
+<script src="../dist/bundle.js"></script>
+<script src="demo.js"></script>
+
+
+</body>
+</html>
