@@ -16,6 +16,7 @@
     "rimraf": "^2.5.2",
     "semantic-release": "^4.3.5",
     "typescript": "^1.8.10",
+    "typings": "^1.0.4",
     "validate-commit-msg": "^2.6.1",
     "webpack": "^1.13.1"
   },
