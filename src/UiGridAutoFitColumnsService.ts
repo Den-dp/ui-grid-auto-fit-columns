@@ -1,16 +1,19 @@
 import * as get from 'lodash/object/get';
 import Measurer from './Measurer';
-import IColumnDef = uiGrid.IColumnDef;
-import IGridColumn = uiGrid.IGridColumn;
-import IGridOptions = uiGrid.IGridOptions;
-import IGridRow = uiGrid.IGridRow;
-import IGridInstance = uiGrid.IGridInstance;
 
-interface IExtendedGridInstance extends IGridInstance {
+interface IExtendedColumnDef extends uiGrid.IColumnDef {
+    enableColumnAutoFit: boolean;
+}
+
+interface IExtendedGridColumn extends uiGrid.IGridColumn {
+    colDef: IExtendedColumnDef;
+}
+
+interface IExtendedGridInstance extends uiGrid.IGridInstance {
     options: IExtendedGridOptions;
 }
 
-interface IExtendedGridOptions extends IGridOptions {
+interface IExtendedGridOptions extends uiGrid.IGridOptions {
     enableColumnAutoFit: boolean;
 }
 
@@ -34,6 +37,7 @@ export class UiGridAutoFitColumnsService {
     }
 
     static defaultGridOptions(gridOptions: IExtendedGridOptions){
+        // true by default
         gridOptions.enableColumnAutoFit = gridOptions.enableColumnAutoFit !== false;
     }
 
@@ -62,19 +66,26 @@ export class UiGridAutoFitColumnsService {
         return value;
     }
 
-    colAutoFitColumnBuilder(colDef: IColumnDef, col: IGridColumn, gridOptions: IExtendedGridOptions){
+    colAutoFitColumnBuilder(colDef: IExtendedColumnDef, col: IExtendedGridColumn, gridOptions: IExtendedGridOptions){
         var promises = [];
 
-        //colDef.enableColumnAutoFit = colDef.enableColumnAutoFit === undefined ? gridOptions.enableColumnAutoFit : colDef.enableColumnAutoFit;
-
+        if(colDef.enableColumnAutoFit === undefined) {
+            //TODO: make it as col.isResizable()
+            if(UiGridAutoFitColumnsService.isResizable(colDef)) {
+                colDef.enableColumnAutoFit = gridOptions.enableColumnAutoFit;
+            } else {
+                colDef.enableColumnAutoFit = false;
+            }
+        }
+        
         return this.$q.all(promises);
     }
     
-    static isResizable(col: IGridColumn): boolean{
-        return !col.colDef.hasOwnProperty('width');
+    static isResizable(colDef: IExtendedColumnDef): boolean{
+        return !colDef.hasOwnProperty('width');
     }
 
-    columnsProcessor(renderedColumnsToProcess?: Array<IGridColumn>, rows?: Array<IGridRow>){
+    columnsProcessor(renderedColumnsToProcess?: Array<IExtendedGridColumn>, rows?: Array<uiGrid.IGridRow>){
         if(!rows.length){
             return renderedColumnsToProcess;
         }
@@ -95,8 +106,8 @@ export class UiGridAutoFitColumnsService {
         } = {};
 
         renderedColumnsToProcess.forEach(column => {
-            //TODO: make it as col.isResizable()
-            if(UiGridAutoFitColumnsService.isResizable(column)) {
+            
+            if(column.colDef.enableColumnAutoFit) {
                 const columnKey = column.name;
                 optimalWidths[columnKey] = Measurer.measureTextWidth(column.displayName, font) + HEADER_BUTTONS_WIDTH;
                 //this.$log.info(`${optimalWidths[pair.key]} ${pair.displayName}`);
