@@ -21,7 +21,7 @@ interface IAnyFilterPredicateFunc {
 export class UiGridAutoFitColumnsService {
 
     /*@ngInject*/
-    constructor (private $q: angular.IQService, private $filter: angular.IFilterService, private $log: angular.ILogService) {
+    constructor (private $q: angular.IQService, private $filter: angular.IFilterService) {
     }
 
 
@@ -63,8 +63,6 @@ export class UiGridAutoFitColumnsService {
     }
 
     colAutoFitColumnBuilder(colDef: IColumnDef, col: IGridColumn, gridOptions: IExtendedGridOptions){
-        this.$log.debug('autoFitColumns::colAutoFitColumnBuilder');
-
         var promises = [];
 
         //colDef.enableColumnAutoFit = colDef.enableColumnAutoFit === undefined ? gridOptions.enableColumnAutoFit : colDef.enableColumnAutoFit;
@@ -72,9 +70,11 @@ export class UiGridAutoFitColumnsService {
         return this.$q.all(promises);
     }
     
-    columnsProcessor(renderedColumnsToProcess?: Array<IGridColumn>, rows?: Array<IGridRow>){
-        this.$log.debug('autoFitColumns::columnProcessor');
+    static isResizable(col: IGridColumn): boolean{
+        return !col.colDef.hasOwnProperty('width');
+    }
 
+    columnsProcessor(renderedColumnsToProcess?: Array<IGridColumn>, rows?: Array<IGridRow>){
         if(!rows.length){
             return renderedColumnsToProcess;
         }
@@ -90,37 +90,37 @@ export class UiGridAutoFitColumnsService {
         const HEADER_BUTTONS_WIDTH = 25;
 
         const displayNames = renderedColumnsToProcess.map(col=>({key: col.name, displayName: col.displayName}));
-
-        //TODO: merge with the next loop?
-        var optimalWidths = displayNames.reduce((optimalWidths, pair) => {
-            optimalWidths[pair.key] = Measurer.measureTextWidth(pair.displayName, font) + HEADER_BUTTONS_WIDTH;
-            //this.$log.info(`${optimalWidths[pair.key]} ${pair.displayName}`);
-            return optimalWidths;
-        }, {});
+        let optimalWidths: {
+            [name: string]: number 
+        } = {};
 
         renderedColumnsToProcess.forEach(column => {
-            const columnKey = column.name;
-            rows.forEach((row) => {
-                let formatedCell;
-                const rawText = get(row.entity, columnKey, row.entity[column.field]);
+            //TODO: make it as col.isResizable()
+            if(UiGridAutoFitColumnsService.isResizable(column)) {
+                const columnKey = column.name;
+                optimalWidths[columnKey] = Measurer.measureTextWidth(column.displayName, font) + HEADER_BUTTONS_WIDTH;
+                //this.$log.info(`${optimalWidths[pair.key]} ${pair.displayName}`);
 
-                if(!!column.colDef.cellFilter){
-                    formatedCell = this.getFilteredValue(rawText, column.colDef.cellFilter);
-                }
+                rows.forEach((row) => {
+                    let formatedCell;
+                    const rawText = get(row.entity, columnKey, row.entity[column.field]);
 
-                const currentCellWidth = Measurer.measureTextWidth(formatedCell || rawText, font);
-                const optimalCellWidth = currentCellWidth > 300 ? 300 : currentCellWidth;
+                    if(!!column.colDef.cellFilter){
+                        formatedCell = this.getFilteredValue(rawText, column.colDef.cellFilter);
+                    }
 
-                if (optimalCellWidth > optimalWidths[columnKey]) {
-                    optimalWidths[columnKey] = optimalCellWidth;
-                    //this.$log.info(`${optimalWidths[columnKey]} ${formatedCell || rawText}`);
-                }
-            });
-        });
+                    const currentCellWidth = Measurer.measureTextWidth(formatedCell || rawText, font);
+                    const optimalCellWidth = currentCellWidth > 300 ? 300 : currentCellWidth;
 
-        renderedColumnsToProcess.forEach(column => {
-            column.colDef.width = optimalWidths[column.name]+padding;
-            column.updateColumnDef(column.colDef, false);
+                    if (optimalCellWidth > optimalWidths[columnKey]) {
+                        optimalWidths[columnKey] = optimalCellWidth;
+                        //this.$log.info(`${optimalWidths[columnKey]} ${formatedCell || rawText}`);
+                    }
+                });
+
+                column.colDef.width = optimalWidths[column.name]+padding;
+                column.updateColumnDef(column.colDef, false);
+            }
         });
     
         return renderedColumnsToProcess;
