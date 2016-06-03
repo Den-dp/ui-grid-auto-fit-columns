@@ -44,7 +44,7 @@ function run($http, $rootScope) {
             { displayName:'registered2', field: 'registered', cellFilter: 'date:"medium"'},
             { field:'picture'},
             { field:'address.street' },
-            { field:'address.city', width:20 },
+            { field:'address.city', width:40 },
             { field:'address.state' },
             { field:'address.zip' },
             { field:'company', sortingAlgorithm: sortingAlgorithm },
