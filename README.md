@@ -7,12 +7,16 @@
 
 The plugin ensures that the column width will be wide enough for showing the longest data of that column (or column name).
 
+## Demo
+
+[http://jsbin.com/tufazaw/edit?js,output](http://jsbin.com/tufazaw/edit?js,output)
+
 ## Installation
 
 This package is distributed via npm:
 
 ```
-npm install ui-grid-auto-fit-columns
+npm install ui-grid-auto-fit-columns -S
 ```
 
 ## Usage

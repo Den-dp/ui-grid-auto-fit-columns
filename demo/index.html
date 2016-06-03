@@ -1,27 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html ng-app="autoFitColumnsExample" ng-strict-di>
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>ui-grid-auto-fit-columns example</title>
     <link rel="stylesheet" href="../node_modules/angular-ui-grid/ui-grid.css">
     <style>
-        html, body {
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
             margin: 0;
-            padding: 0;
-            height: 100%;
+            padding: 15px;
+        }
+
+        .full-height {
+            height: calc(100vh - 2px - 30px);
         }
     </style>
 </head>
-<body ng-strict-di ng-app="app">
+<body ng-controller="MainController as ctrl">
 
-<div ui-grid="gridOptions" ui-grid-auto-fit-columns ui-grid-pagination ui-grid-resize-columns style="height: 99vh"></div>
-<button ng-click="reload()" style="position:absolute;left:50%;bottom:0;">Reload</button>
+<div ui-grid="ctrl.gridOptions"
+     ui-grid-auto-fit-columns
+     ui-grid-pagination
+     ui-grid-resize-columns
+     class="full-height">
+</div>
 
 <script src="../node_modules/angular/angular.js"></script>
 <script src="../node_modules/angular-ui-grid/ui-grid.js"></script>
 <script src="../dist/autoFitColumns.js"></script>
 <script src="demo.js"></script>
-
 
 </body>
 </html>
