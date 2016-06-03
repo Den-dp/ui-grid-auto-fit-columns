@@ -1,6 +1,7 @@
 {
   "name": "ui-grid-auto-fit-columns",
   "version": "0.0.0-semantically-released.0",
+  "typings": "index.d.ts",
   "description": "The plugin ensures that the column width will be wide enough for showing the longest data of that column (or column name).",
   "dependencies": {},
   "devDependencies": {
