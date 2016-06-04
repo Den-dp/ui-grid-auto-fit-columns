@@ -4,7 +4,7 @@ var NgAnnotatePlugin = require('ng-annotate-webpack-plugin');
 var NODE_ENV = process.env.NODE_ENV || 'development';
 
 function isProduction() {
-    return NODE_ENV === 'production'
+    return NODE_ENV === 'production';
 }
 
 module.exports = {

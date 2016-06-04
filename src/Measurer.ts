@@ -2,10 +2,10 @@ export class Measurer {
     private static canvas: HTMLCanvasElement;
 
     static measureTextWidth(text: string, font: string): number{
-        var canvas = Measurer.canvas || (Measurer.canvas = document.createElement('canvas'));
-        var context = canvas.getContext('2d');
+        const canvas = Measurer.canvas || (Measurer.canvas = document.createElement('canvas'));
+        const context = canvas.getContext('2d');
         context.font = font;
-        var metrics = context.measureText(text);
+        const metrics = context.measureText(text);
         return metrics.width;
     }
 

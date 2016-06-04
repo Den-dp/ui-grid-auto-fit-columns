@@ -18,7 +18,7 @@ interface IExtendedGridOptions extends uiGrid.IGridOptions {
 }
 
 interface IAnyFilterPredicateFunc {
-    (value: any, firstFlag?:any, secondFlag?: any): string;
+    (value: any, firstFlag?: any, secondFlag?: any): string;
 }
 
 export class UiGridAutoFitColumnsService {
@@ -27,16 +27,14 @@ export class UiGridAutoFitColumnsService {
     constructor (private $q: angular.IQService, private $filter: angular.IFilterService) {
     }
 
-
     initializeGrid(grid: IExtendedGridInstance) {
         grid.registerColumnBuilder(this.colAutoFitColumnBuilder.bind(this));
         grid.registerColumnsProcessor(this.columnsProcessor.bind(this), 60);
 
         UiGridAutoFitColumnsService.defaultGridOptions(grid.options);
-        
     }
 
-    static defaultGridOptions(gridOptions: IExtendedGridOptions){
+    static defaultGridOptions(gridOptions: IExtendedGridOptions) {
         // true by default
         gridOptions.enableColumnAutoFit = gridOptions.enableColumnAutoFit !== false;
     }
@@ -44,13 +42,13 @@ export class UiGridAutoFitColumnsService {
     private getFilterIfExists<T>(filterName): any {
         try {
             return this.$filter<IAnyFilterPredicateFunc>(filterName);
-        } catch (e){
+        } catch (e) {
             return null;
         }
     }
 
-    private getFilteredValue(value: string, cellFilter: string){
-        if (cellFilter && cellFilter !== ''){
+    private getFilteredValue(value: string, cellFilter: string) {
+        if (cellFilter && cellFilter !== '') {
             const filter = this.getFilterIfExists(cellFilter);
             if (filter) {
                 value = filter(value);
@@ -66,27 +64,27 @@ export class UiGridAutoFitColumnsService {
         return value;
     }
 
-    colAutoFitColumnBuilder(colDef: IExtendedColumnDef, col: IExtendedGridColumn, gridOptions: IExtendedGridOptions){
-        var promises = [];
+    colAutoFitColumnBuilder(colDef: IExtendedColumnDef, col: IExtendedGridColumn, gridOptions: IExtendedGridOptions) {
+        const promises = [];
 
-        if(colDef.enableColumnAutoFit === undefined) {
+        if (colDef.enableColumnAutoFit === undefined) {
             //TODO: make it as col.isResizable()
-            if(UiGridAutoFitColumnsService.isResizable(colDef)) {
+            if (UiGridAutoFitColumnsService.isResizable(colDef)) {
                 colDef.enableColumnAutoFit = gridOptions.enableColumnAutoFit;
             } else {
                 colDef.enableColumnAutoFit = false;
             }
         }
-        
+
         return this.$q.all(promises);
     }
-    
-    static isResizable(colDef: IExtendedColumnDef): boolean{
+
+    static isResizable(colDef: IExtendedColumnDef): boolean {
         return !colDef.hasOwnProperty('width');
     }
 
-    columnsProcessor(renderedColumnsToProcess?: Array<IExtendedGridColumn>, rows?: Array<uiGrid.IGridRow>){
-        if(!rows.length){
+    columnsProcessor(renderedColumnsToProcess?: Array<IExtendedGridColumn>, rows?: Array<uiGrid.IGridRow>) {
+        if (!rows.length) {
             return renderedColumnsToProcess;
         }
 
@@ -94,20 +92,19 @@ export class UiGridAutoFitColumnsService {
         // if (col.colDef.enableColumnAutoFitting === false) return; 
 
         // TODO: try not to be tied to the class names
-        const computedCellStyle = getComputedStyle(document.querySelector('.ui-grid-cell') || document.querySelector('.ui-grid-header-cell'));
-        const computedCellContentStyle = getComputedStyle(document.querySelector('.ui-grid-cell-contents'));
-        const font = computedCellContentStyle.font;
-        const padding = parseInt(computedCellStyle.borderRightWidth) + parseInt(computedCellContentStyle.paddingRight) + parseInt(computedCellContentStyle.paddingLeft);
+        const cellStyle = getComputedStyle(document.querySelector('.ui-grid-cell') || document.querySelector('.ui-grid-header-cell'));
+        const cellContentStyle = getComputedStyle(document.querySelector('.ui-grid-cell-contents'));
+        const font = cellContentStyle.font;
+        const padding = parseInt(cellStyle.borderRightWidth) + parseInt(cellContentStyle.paddingRight) + parseInt(cellContentStyle.paddingLeft);
         const HEADER_BUTTONS_WIDTH = 25;
 
-        const displayNames = renderedColumnsToProcess.map(col=>({key: col.name, displayName: col.displayName}));
         let optimalWidths: {
-            [name: string]: number 
+            [name: string]: number
         } = {};
 
         renderedColumnsToProcess.forEach(column => {
-            
-            if(column.colDef.enableColumnAutoFit) {
+
+            if (column.colDef.enableColumnAutoFit) {
                 const columnKey = column.name;
                 optimalWidths[columnKey] = Measurer.measureTextWidth(column.displayName, font) + HEADER_BUTTONS_WIDTH;
                 //this.$log.info(`${optimalWidths[pair.key]} ${pair.displayName}`);
@@ -116,7 +113,7 @@ export class UiGridAutoFitColumnsService {
                     let formatedCell;
                     const rawText = get(row.entity, columnKey, row.entity[column.field]);
 
-                    if(!!column.colDef.cellFilter){
+                    if (!!column.colDef.cellFilter) {
                         formatedCell = this.getFilteredValue(rawText, column.colDef.cellFilter);
                     }
 
@@ -129,11 +126,11 @@ export class UiGridAutoFitColumnsService {
                     }
                 });
 
-                column.colDef.width = optimalWidths[column.name]+padding;
+                column.colDef.width = optimalWidths[column.name] + padding;
                 column.updateColumnDef(column.colDef, false);
             }
         });
-    
+
         return renderedColumnsToProcess;
     }
 
