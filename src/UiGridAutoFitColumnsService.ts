@@ -1,5 +1,6 @@
 import * as get from 'lodash/object/get';
 import Measurer from './Measurer';
+import UiGridMetrics from './UiGridMetrics';
 
 interface IExtendedColumnDef extends uiGrid.IColumnDef {
     enableColumnAutoFit: boolean;
@@ -22,9 +23,11 @@ interface IAnyFilterPredicateFunc {
 }
 
 export class UiGridAutoFitColumnsService {
+    private gridMetrics: UiGridMetrics;
 
     /*@ngInject*/
     constructor (private $q: angular.IQService, private $filter: angular.IFilterService) {
+        this.gridMetrics = new UiGridMetrics();
     }
 
     initializeGrid(grid: IExtendedGridInstance) {
@@ -87,50 +90,39 @@ export class UiGridAutoFitColumnsService {
         if (!rows.length) {
             return renderedColumnsToProcess;
         }
-
         // TODO: respect existing colDef options
-        // if (col.colDef.enableColumnAutoFitting === false) return; 
-
-        // TODO: try not to be tied to the class names
-        const cellStyle = getComputedStyle(document.querySelector('.ui-grid-cell') || document.querySelector('.ui-grid-header-cell'));
-        const cellContentStyle = getComputedStyle(document.querySelector('.ui-grid-cell-contents'));
-        const font = cellContentStyle.font;
-        const padding = parseInt(cellStyle.borderRightWidth) + parseInt(cellContentStyle.paddingRight) + parseInt(cellContentStyle.paddingLeft);
-        const HEADER_BUTTONS_WIDTH = 25;
+        // if (col.colDef.enableColumnAutoFitting === false) return;
 
         let optimalWidths: {
             [name: string]: number
         } = {};
 
+
         renderedColumnsToProcess.forEach(column => {
 
             if (column.colDef.enableColumnAutoFit) {
-                const columnKey = column.name;
-                optimalWidths[columnKey] = Measurer.measureTextWidth(column.displayName, font) + HEADER_BUTTONS_WIDTH;
-                //this.$log.info(`${optimalWidths[pair.key]} ${pair.displayName}`);
+                const columnKey = column.field || column.name;
+                optimalWidths[columnKey] = Measurer.measureRoundedTextWidth(column.displayName, this.gridMetrics.getHeaderFont()) + this.gridMetrics.getHeaderButtonsWidth();
 
                 rows.forEach((row) => {
-                    let formatedCell;
-                    const rawText = get(row.entity, columnKey, row.entity[column.field]);
+                    let cellText = get(row.entity, columnKey);
 
                     if (!!column.colDef.cellFilter) {
-                        formatedCell = this.getFilteredValue(rawText, column.colDef.cellFilter);
+                        cellText = this.getFilteredValue(cellText, column.colDef.cellFilter);
                     }
 
-                    const currentCellWidth = Measurer.measureTextWidth(formatedCell || rawText, font);
+                    const currentCellWidth = Measurer.measureRoundedTextWidth(cellText, this.gridMetrics.getCellFont());
                     const optimalCellWidth = currentCellWidth > 300 ? 300 : currentCellWidth;
 
                     if (optimalCellWidth > optimalWidths[columnKey]) {
                         optimalWidths[columnKey] = optimalCellWidth;
-                        //this.$log.info(`${optimalWidths[columnKey]} ${formatedCell || rawText}`);
                     }
                 });
 
-                column.colDef.width = optimalWidths[column.name] + padding;
+                column.colDef.width = optimalWidths[columnKey] + this.gridMetrics.getPadding() + this.gridMetrics.getBorder();
                 column.updateColumnDef(column.colDef, false);
             }
         });
-
         return renderedColumnsToProcess;
     }
 
