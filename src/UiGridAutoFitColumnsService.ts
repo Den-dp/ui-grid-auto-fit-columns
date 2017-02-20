@@ -56,8 +56,8 @@ export class UiGridAutoFitColumnsService {
             if (filter) {
                 value = filter(value);
             } else {
-                // https://regex101.com/r/rC5eR5/3
-                const re = /([^:]*):["']([^:]*)["']:?([\s\S]+)?/;
+                // https://regex101.com/r/rC5eR5/2
+                const re = /([^:]*):([^:]*):?([\s\S]+)?/;
                 let matches;
                 if ((matches = re.exec(cellFilter)) !== null) {
                     value = this.$filter<IAnyFilterPredicateFunc>(matches[1])(value, matches[2], matches[3]);
