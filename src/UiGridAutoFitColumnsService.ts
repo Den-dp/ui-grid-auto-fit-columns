@@ -87,6 +87,9 @@ export class UiGridAutoFitColumnsService {
     }
 
     columnsProcessor(renderedColumnsToProcess?: Array<IExtendedGridColumn>, rows?: Array<uiGrid.IGridRow>) {
+        if (!rows.length) {
+            return renderedColumnsToProcess;
+        }
         // TODO: respect existing colDef options
         // if (col.colDef.enableColumnAutoFitting === false) return;
 
