@@ -105,7 +105,7 @@ export class UiGridAutoFitColumnsService {
                 optimalWidths[columnKey] = Measurer.measureRoundedTextWidth(column.displayName, this.gridMetrics.getHeaderFont()) + this.gridMetrics.getHeaderButtonsWidth();
 
                 rows.forEach((row) => {
-                    let cellText = get(row.entity, columnKey);
+                    let cellText = row.grid.getCellValue(row, column);
 
                     if (!!column.colDef.cellFilter) {
                         cellText = this.getFilteredValue(cellText, column.colDef.cellFilter);
