@@ -14,7 +14,6 @@
     "cz-conventional-changelog": "~1.1.6",
     "ghooks": "~1.2.1",
     "jquery": "~2.2.4",
-    "lodash": "~3.10.1",
     "ng-annotate-webpack-plugin": "~0.1.2",
     "rimraf": "~2.5.2",
     "semantic-release": "~4.3.5",

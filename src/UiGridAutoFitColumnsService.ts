@@ -1,4 +1,3 @@
-import * as get from 'lodash/object/get';
 import Measurer from './Measurer';
 import UiGridMetrics from './UiGridMetrics';
 
