@@ -4,6 +4,8 @@ import UiGridMetrics from './UiGridMetrics';
 
 interface IExtendedColumnDef extends uiGrid.IColumnDef {
     enableColumnAutoFit: boolean;
+    stretch: boolean;
+    extraWidth: number;
 }
 
 interface IExtendedGridColumn extends uiGrid.IGridColumn {
@@ -102,6 +104,8 @@ export class UiGridAutoFitColumnsService {
 
             if (column.colDef.enableColumnAutoFit) {
                 const columnKey = column.field || column.name;
+                // Extra width to consider besides the text, such as from an image
+                const extraWidth = column.colDef.extraWidth || 0;
                 optimalWidths[columnKey] = Measurer.measureRoundedTextWidth(column.displayName, this.gridMetrics.getHeaderFont()) + this.gridMetrics.getHeaderButtonsWidth();
 
                 rows.forEach((row) => {
@@ -111,7 +115,7 @@ export class UiGridAutoFitColumnsService {
                         cellText = this.getFilteredValue(cellText, column.colDef.cellFilter);
                     }
 
-                    const currentCellWidth = Measurer.measureRoundedTextWidth(cellText, this.gridMetrics.getCellFont());
+                    const currentCellWidth = Measurer.measureRoundedTextWidth(cellText, this.gridMetrics.getCellFont()) + extraWidth;
                     const optimalCellWidth = currentCellWidth > 300 ? 300 : currentCellWidth;
 
                     if (optimalCellWidth > optimalWidths[columnKey]) {
@@ -119,7 +123,13 @@ export class UiGridAutoFitColumnsService {
                     }
                 });
 
-                column.colDef.width = optimalWidths[columnKey] + this.gridMetrics.getPadding() + this.gridMetrics.getBorder();
+                if (column.colDef.stretch) {
+                    // If we want a column to stretch so that the grid can fill its parent container
+                    column.colDef.minWidth = optimalWidths[columnKey] + this.gridMetrics.getPadding() + this.gridMetrics.getBorder();
+                    column.colDef.width = '*';
+                } else {
+                    column.colDef.width = optimalWidths[columnKey] + this.gridMetrics.getPadding() + this.gridMetrics.getBorder();
+                }
                 column.updateColumnDef(column.colDef, false);
             }
         });
