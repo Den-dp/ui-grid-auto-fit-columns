@@ -19,7 +19,6 @@ typings/
 
 # Misc
 .ignore/
-dist/
 
 
 # Editors
