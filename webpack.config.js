@@ -11,7 +11,7 @@ module.exports = {
     entry: './src/index.ts',
 
     output: {
-        path: './dist',
+        path: __dirname + '/dist',
         filename: isProduction() ? 'autoFitColumns.min.js' : 'autoFitColumns.js',
         libraryTarget: 'umd'
     },
@@ -21,14 +21,14 @@ module.exports = {
     },
 
     resolve: {
-        extensions: ['', '.ts', '.webpack.js', '.web.js', '.js']
+        extensions: ['.ts', '.webpack.js', '.web.js', '.js']
     },
 
     devtool: 'source-map',
 
     module: {
         loaders: [
-            { test: /\.ts$/, loader: 'awesome-typescript', exclude: /(node_modules|bower_components)/ }
+            { test: /\.ts$/, loader: 'awesome-typescript-loader', exclude: /(node_modules|bower_components)/ }
         ]
     },
 

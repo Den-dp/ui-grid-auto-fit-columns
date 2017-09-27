@@ -50,13 +50,15 @@ export class UiGridMetrics {
 
         let header = document.querySelector('.ui-grid-header-cell .ui-grid-cell-contents');
 
-        if(!header) {
-            throw new Error('not found: .ui-grid-header-cell .ui-grid-cell-contents');
+        if(header !== null) {
+            let {paddingLeft, paddingRight} = getComputedStyle(header);
+            this.padding = parseInt(paddingLeft) + parseInt(paddingRight);
+            return this.padding;
+        } else {
+            return 0;
         }
 
-        let {paddingLeft, paddingRight} = getComputedStyle(header);
-        this.padding = parseInt(paddingLeft) + parseInt(paddingRight);
-        return this.padding;
+        
     }
 
     getBorder(){
@@ -66,13 +68,16 @@ export class UiGridMetrics {
 
         let header = document.querySelector('.ui-grid-header-cell');
 
-        if(!header) {
-            throw new Error('not found: .ui-grid-header-cell');
+        if(header !== null) {
+            let {borderRightWidth} = getComputedStyle(header);
+            this.border = parseInt(borderRightWidth);
+            return this.border;
+        }
+        else {
+            return 0;
         }
 
-        let {borderRightWidth} = getComputedStyle(header);
-        this.border = parseInt(borderRightWidth);
-        return this.border;
+        
     }
 
     getHeaderButtonsWidth(){
