@@ -1,24 +1,29 @@
-import * as get from 'lodash/object/get';
+
 import Measurer from './Measurer';
 import UiGridMetrics from './UiGridMetrics';
 
-interface IExtendedColumnDef extends uiGrid.IColumnDef {
+export interface IExtendedColumnDef extends uiGrid.IColumnDef {
     enableColumnAutoFit: boolean;
 }
 
-interface IExtendedGridColumn extends uiGrid.IGridColumn {
+export interface IExtendedGridColumn extends uiGrid.IGridColumn {
     colDef: IExtendedColumnDef;
+    hasCustomWidth: boolean;
+    minWidth: number;
+    maxWidth: number;
+    grid: IExtendedGridInstance;
 }
 
-interface IExtendedGridInstance extends uiGrid.IGridInstance {
+export interface IExtendedGridInstance extends uiGrid.IGridInstance {
     options: IExtendedGridOptions;
+    id: number;
 }
 
-interface IExtendedGridOptions extends uiGrid.IGridOptions {
+export interface IExtendedGridOptions extends uiGrid.IGridOptions {
     enableColumnAutoFit: boolean;
 }
 
-interface IAnyFilterPredicateFunc {
+export interface IAnyFilterPredicateFunc {
     (value: any, firstFlag?: any, secondFlag?: any): string;
 }
 
@@ -87,33 +92,40 @@ export class UiGridAutoFitColumnsService {
     }
 
     columnsProcessor(renderedColumnsToProcess?: Array<IExtendedGridColumn>, rows?: Array<uiGrid.IGridRow>) {
+    
         if (!rows.length) {
             return renderedColumnsToProcess;
         }
-        // TODO: respect existing colDef options
-        // if (col.colDef.enableColumnAutoFitting === false) return;
 
         let optimalWidths: {
             [name: string]: number
         } = {};
 
+        /* to be able to calculate the width of a column in any browser, we need to temporarily deactivate the min-width and max-width attributes set before */
+        let tempCSS = '';
+        renderedColumnsToProcess.forEach(function (column) {
+            //30px and 9000px are the default values for minWidth and maxWidth in UI Grid.
+            tempCSS += ' .grid' + column.grid.id + ' ' + column.getColClass(true) + ' { min-width: 30px !important; max-width: 9000px !important; }';
+        });
+        let tempStyle = $('<style>').text(tempCSS).appendTo('body');
 
         renderedColumnsToProcess.forEach(column => {
 
-            if (column.colDef.enableColumnAutoFit) {
+            if (column.colDef.enableColumnAutoFit && !column.hasCustomWidth) {
                 const columnKey = column.field || column.name;
-                optimalWidths[columnKey] = Measurer.measureRoundedTextWidth(column.displayName, this.gridMetrics.getHeaderFont()) + this.gridMetrics.getHeaderButtonsWidth();
+                
+                let currentHeaderWidth = 0;
+                if($('.ui-grid-header-cell' + column.getColClass(true))[0] !== undefined) {
+                    currentHeaderWidth = $('.ui-grid-header-cell' + column.getColClass(true))[0].scrollWidth;
+                } 
+                let optimalHeaderWidth = currentHeaderWidth < column.minWidth ? column.minWidth : currentHeaderWidth;
+                optimalHeaderWidth = optimalHeaderWidth > column.maxWidth ? column.maxWidth : optimalHeaderWidth;
+                optimalWidths[columnKey] = optimalHeaderWidth;
 
-                rows.forEach((row) => {
-                    let cellText = get(row.entity, columnKey);
-
-                    if (!!column.colDef.cellFilter) {
-                        cellText = this.getFilteredValue(cellText, column.colDef.cellFilter);
-                    }
-
-                    const currentCellWidth = Measurer.measureRoundedTextWidth(cellText, this.gridMetrics.getCellFont());
-                    const optimalCellWidth = currentCellWidth > 300 ? 300 : currentCellWidth;
-
+                $(column.getColClass(true)).each(function () {
+                    let currentCellWidth = this.scrollWidth;
+                    let optimalCellWidth = currentCellWidth < column.minWidth ? column.minWidth : currentCellWidth;
+                    optimalCellWidth = optimalCellWidth > column.maxWidth ? column.maxWidth : optimalCellWidth;
                     if (optimalCellWidth > optimalWidths[columnKey]) {
                         optimalWidths[columnKey] = optimalCellWidth;
                     }
@@ -123,6 +135,9 @@ export class UiGridAutoFitColumnsService {
                 column.updateColumnDef(column.colDef, false);
             }
         });
+
+        tempStyle.remove();
+
         return renderedColumnsToProcess;
     }
 
