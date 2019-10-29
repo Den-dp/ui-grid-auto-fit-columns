@@ -86,16 +86,17 @@ export class UiGridAutoFitColumnsService {
     }
 
     columnsProcessor(renderedColumnsToProcess?: Array<IExtendedGridColumn>, rows?: Array<uiGrid.IGridRow>) {
-        if (!rows.length) {
+        if (!rows.length || renderedColumnsToProcess.length === 0) {
             return renderedColumnsToProcess;
         }
         // TODO: respect existing colDef options
         // if (col.colDef.enableColumnAutoFitting === false) return;
 
+        let gridWidth = renderedColumnsToProcess[0].grid.gridWidth;
         let optimalWidths: {
             [name: string]: number
         } = {};
-
+        let columnsWidth = 0;
 
         renderedColumnsToProcess.forEach(column => {
 
@@ -119,9 +120,20 @@ export class UiGridAutoFitColumnsService {
                 });
 
                 column.colDef.width = optimalWidths[columnKey] + this.gridMetrics.getPadding() + this.gridMetrics.getBorder();
+                columnsWidth += column.colDef.width;
+            } else {
+                gridWidth -= column.colDef.width;
+            }
+        });
+
+        const multiplier = gridWidth / columnsWidth;
+        renderedColumnsToProcess.forEach(function (column) {
+            if (column.colDef.enableColumnAutoFit) {
+                column.colDef.width = Math.round(column.colDef.width * multiplier);
                 column.updateColumnDef(column.colDef, false);
             }
         });
+
         return renderedColumnsToProcess;
     }
 
