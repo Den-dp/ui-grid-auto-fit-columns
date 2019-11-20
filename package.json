@@ -6,7 +6,7 @@
   "description": "The plugin ensures that the column width will be wide enough for showing the longest data of that column (or column name).",
   "dependencies": {},
   "devDependencies": {
-    "angular": "~1.5.6",
+    "angular": "~1.7.9",
     "angular-ui-grid": "~3.1.1",
     "awesome-typescript-loader": "~0.17.0",
     "commitizen": "~2.8.1",
