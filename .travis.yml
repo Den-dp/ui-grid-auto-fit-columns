@@ -1,21 +1,17 @@
 sudo: false
 language: node_js
 cache:
-  directories:
-    - node_modules
+    directories:
+        - node_modules
 notifications:
-  email: false
+    email: false
 node_js:
-  - '4'
-before_install:
-  - npm i -g npm@^3.0.0
-before_script:
-  - npm prune
+    - '12'
 script:
-  - npm run test:single
-  - npm run build
+    - npm test
+    - npm run build
 after_success:
-  - npm run semantic-release
+    - npx semantic-release@15
 branches:
-  only:
-    - master
+    only:
+        - master

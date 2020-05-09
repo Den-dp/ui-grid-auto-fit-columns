@@ -1,3 +1,5 @@
+import * as angular from 'angular';
+
 export class UiGridMetrics {
     private headerFont: string;
     private cellFont: string;
@@ -88,5 +90,3 @@ export class UiGridMetrics {
     }
 
 }
-
-export default UiGridMetrics;

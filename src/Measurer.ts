@@ -14,5 +14,3 @@ export class Measurer {
         return Math.floor(width) + 1;
     }
 }
-
-export default Measurer;

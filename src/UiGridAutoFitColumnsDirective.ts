@@ -1,6 +1,5 @@
 import { UiGridAutoFitColumnsService } from './UiGridAutoFitColumnsService';
 
-/*@ngInject*/
 export function UiGridAutoFitColumnsDirective (uiGridAutoFitColumnsService: UiGridAutoFitColumnsService) {
     return {
         replace: true,
@@ -16,3 +15,4 @@ export function UiGridAutoFitColumnsDirective (uiGridAutoFitColumnsService: UiGr
         }
     };
 }
+UiGridAutoFitColumnsDirective.$inject = ['uiGridAutoFitColumnsService'];
