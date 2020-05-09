@@ -1,4 +1,4 @@
-import { IFilterService, IQService } from 'angular';
+import { IQService } from 'angular';
 import { IColumnDef, IGridColumn, IGridInstance, IGridOptions, IGridRow } from 'ui-grid';
 import { Measurer } from './Measurer';
 import { UiGridMetrics } from './UiGridMetrics';
@@ -27,7 +27,7 @@ export class UiGridAutoFitColumnsService {
     static $inject = ['$q', '$filter', '$parse'];
     private gridMetrics: UiGridMetrics;
 
-    constructor (private $q: IQService, private $filter: IFilterService) {
+    constructor (private $q: IQService) {
         this.gridMetrics = new UiGridMetrics();
     }
 
@@ -41,31 +41,6 @@ export class UiGridAutoFitColumnsService {
     static defaultGridOptions(gridOptions: IExtendedGridOptions) {
         // true by default
         gridOptions.enableColumnAutoFit = gridOptions.enableColumnAutoFit !== false;
-    }
-
-    private getFilterIfExists<T>(filterName): any {
-        try {
-            return this.$filter<IAnyFilterPredicateFunc>(filterName);
-        } catch (e) {
-            return null;
-        }
-    }
-
-    private getFilteredValue(value: string, cellFilter: string) {
-        if (cellFilter && cellFilter !== '') {
-            const filter = this.getFilterIfExists(cellFilter);
-            if (filter) {
-                value = filter(value);
-            } else {
-                // https://regex101.com/r/rC5eR5/2
-                const re = /([^:]*):([^:]*):?([\s\S]+)?/;
-                let matches;
-                if ((matches = re.exec(cellFilter)) !== null) {
-                    value = this.$filter<IAnyFilterPredicateFunc>(matches[1])(value, matches[2], matches[3]);
-                }
-            }
-        }
-        return value;
     }
 
     colAutoFitColumnBuilder(colDef: IExtendedColumnDef, col: IExtendedGridColumn, gridOptions: IExtendedGridOptions) {
@@ -106,12 +81,7 @@ export class UiGridAutoFitColumnsService {
                 optimalWidths[columnKey] = Measurer.measureRoundedTextWidth(column.displayName, this.gridMetrics.getHeaderFont()) + this.gridMetrics.getHeaderButtonsWidth();
 
                 rows.forEach((row) => {
-                    let cellText = row.grid.getCellValue(row, column);
-
-                    if (!!column.colDef.cellFilter) {
-                        cellText = this.getFilteredValue(cellText, column.colDef.cellFilter);
-                    }
-
+                    const cellText = row.grid.getCellDisplayValue(row, column);
                     const currentCellWidth = Measurer.measureRoundedTextWidth(cellText, this.gridMetrics.getCellFont());
                     const optimalCellWidth = currentCellWidth > 300 ? 300 : currentCellWidth;
 

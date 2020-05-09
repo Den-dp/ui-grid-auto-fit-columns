@@ -26,7 +26,9 @@ function MainController($http){
             { field: 'age', displayName: 'third age in a row' }, //works ok with aliases
             { name: 'guid' },
             { name: 'registered', cellFilter: 'date:"yyyy-MM-dd"' }, //can handle filters
-            { name: 'registered', displayName: 'registered2', cellFilter: 'date:"medium"' },
+            { name: 'registered2', field: 'registered', cellFilter: 'date:"medium"' },
+            { name: 'registered3', field: 'registered', cellFilter: 'date:"medium":"UTC"' },
+            { name: 'registered4', field: 'registered', cellFilter: "date:'yyyy-MM-dd HH:mm:ss':'UTC'" },
             { name: 'picture' },
             { name: 'company' },
             { name: 'email' },
