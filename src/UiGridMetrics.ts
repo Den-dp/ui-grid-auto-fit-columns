@@ -90,5 +90,3 @@ export class UiGridMetrics {
     }
 
 }
-
-export default UiGridMetrics;
