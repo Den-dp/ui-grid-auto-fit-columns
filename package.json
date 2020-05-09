@@ -12,19 +12,20 @@
     "angular": "*"
   },
   "devDependencies": {
+    "@commitlint/config-conventional": "^8.3.4",
     "@types/angular": "^1.7.0",
     "@types/jquery": "^3.3.38",
     "@types/ui-grid": "0.0.43",
     "angular": "^1.7.9",
     "angular-ui-grid": "^4.8.3",
     "clean-webpack-plugin": "^3.0.0",
-    "commitizen": "~2.8.1",
-    "cz-conventional-changelog": "~1.1.6",
-    "ghooks": "~1.2.1",
+    "commitiquette": "^1.0.4",
+    "commitizen": "^4.1.2",
+    "commitlint": "^8.3.5",
+    "husky": "^4.2.5",
     "jquery": "^3.5.1",
     "ts-loader": "^7.0.3",
     "typescript": "^3.8.3",
-    "validate-commit-msg": "~2.6.1",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11"
   },
@@ -32,7 +33,7 @@
     "build": "webpack --mode development",
     "start": "webpack --mode development --watch",
     "test": "echo \"Error: no test specified\"",
-    "commit": "git-cz"
+    "commit": "npx git-cz"
   },
   "keywords": [
     "ui-grid",
@@ -53,12 +54,19 @@
     "url": "https://github.com/Den-dp/ui-grid-auto-fit-columns/issues"
   },
   "homepage": "https://github.com/Den-dp/ui-grid-auto-fit-columns#readme",
-  "config": {
-    "ghooks": {
-      "commit-msg": "validate-commit-msg && npm test"
-    },
-    "commitizen": {
-      "path": "cz-conventional-changelog"
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -x @commitlint/config-conventional -E HUSKY_GIT_PARAMS && npm test"
     }
+  },
+  "config": {
+    "commitizen": {
+      "path": "commitiquette"
+    }
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
   }
 }

@@ -9,7 +9,7 @@ The plugin ensures that the column width will be wide enough for showing the lon
 
 ## Demo
 
-[http://jsbin.com/tufazaw/edit?js,output](http://jsbin.com/tufazaw/edit?js,output)
+http://jsbin.com/tufazaw/edit?js,output
 
 ## Installation
 
@@ -30,4 +30,6 @@ angular.module('app', ['ui.grid', 'ui.grid.autoFitColumns'])
 ```
 
 ## Contributing
-[conventional-changelog](https://github.com/ajoslin/conventional-changelog/blob/master/conventions/angular.md)
+https://conventionalcommits.org
+
+[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
