@@ -1,18 +1,16 @@
 {
-    "compilerOptions": {
-        "module": "commonjs",
-        "target": "es5",
-        "sourceMap": true,
-        "outDir": "./",
-        "removeComments": false,
-        "noImplicitAny": false,
-        "noEmitHelpers": false,
-        "moduleResolution": "node"
-    },
-    "files": [
-        "typings/index.d.ts",
-        "src/index.ts",
-        "src/UiGridAutoFitColumnsService.ts",
-        "src/UiGridAutoFitColumnsDirective.ts"
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist",
+    "sourceMap": true,
+    "declaration": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "target": "es2015",
+    "lib": [
+      "es2018",
+      "dom"
     ]
+  }
 }

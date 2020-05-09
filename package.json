@@ -1,36 +1,38 @@
 {
   "name": "ui-grid-auto-fit-columns",
   "version": "0.0.0-semantically-released.0",
-  "main": "dist/autoFitColumns.js",
-  "typings": "index.d.ts",
+  "main": "./dist/ui-grid.auto-fit-columns.umd.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "description": "The plugin ensures that the column width will be wide enough for showing the longest data of that column (or column name).",
   "dependencies": {},
+  "peerDependencies": {
+    "angular": "*"
+  },
   "devDependencies": {
-    "angular": "~1.5.6",
-    "angular-ui-grid": "~3.1.1",
-    "awesome-typescript-loader": "~0.17.0",
+    "@types/angular": "^1.7.0",
+    "@types/jquery": "^3.3.38",
+    "@types/ui-grid": "0.0.43",
+    "angular": "^1.7.9",
+    "angular-ui-grid": "^4.8.3",
+    "clean-webpack-plugin": "^3.0.0",
     "commitizen": "~2.8.1",
-    "cross-env": "~1.0.8",
     "cz-conventional-changelog": "~1.1.6",
     "ghooks": "~1.2.1",
-    "jquery": "~2.2.4",
-    "ng-annotate-webpack-plugin": "~0.1.2",
-    "rimraf": "~2.5.2",
-    "semantic-release": "~4.3.5",
-    "typescript": "~1.8.10",
-    "typings": "~1.0.4",
+    "jquery": "^3.5.1",
+    "ts-loader": "^7.0.3",
+    "typescript": "^3.8.3",
     "validate-commit-msg": "~2.6.1",
-    "webpack": "~1.13.1"
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
   },
   "scripts": {
-    "prebuild": "typings install & rimraf dist build",
-    "build": "tsc -d & npm run build:dist & npm run build:prod",
-    "build:dist": "webpack --progress --colors",
-    "build:prod": "cross-env NODE_ENV=production webpack --progress --colors",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "test:single": "echo \"No test specified\"",
-    "commit": "git-cz",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
+    "build": "webpack --mode development",
+    "start": "webpack --mode development --watch",
+    "test": "echo \"Error: no test specified\"",
+    "commit": "git-cz"
   },
   "keywords": [
     "ui-grid",
@@ -43,7 +45,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/Den-dp/ui-grid-auto-fit-columns.git"
+    "url": "git+https://github.com/Den-dp/ui-grid-auto-fit-columns.git"
   },
   "author": "Den-dp <Denis.Bendrikov@gmail.com>",
   "license": "ISC",
@@ -53,7 +55,7 @@
   "homepage": "https://github.com/Den-dp/ui-grid-auto-fit-columns#readme",
   "config": {
     "ghooks": {
-      "commit-msg": "validate-commit-msg && npm run test:single"
+      "commit-msg": "validate-commit-msg && npm test"
     },
     "commitizen": {
       "path": "cz-conventional-changelog"

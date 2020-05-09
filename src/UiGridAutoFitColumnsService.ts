@@ -1,3 +1,4 @@
+import * as uiGrid from 'ui-grid';
 import Measurer from './Measurer';
 import UiGridMetrics from './UiGridMetrics';
 
@@ -22,9 +23,9 @@ interface IAnyFilterPredicateFunc {
 }
 
 export class UiGridAutoFitColumnsService {
+    static $inject = ['$q', '$filter', '$parse'];
     private gridMetrics: UiGridMetrics;
 
-    /*@ngInject*/
     constructor (private $q: angular.IQService, private $filter: angular.IFilterService) {
         this.gridMetrics = new UiGridMetrics();
     }
