@@ -43,7 +43,7 @@ function MainController($http){
         return colDef;
     });
 
-    $http.get('500_complex.json')
+    $http.get('https://raw.githubusercontent.com/angular-ui/ui-grid/master/misc/site/data/500_complex.json')
         .then(function(response) {
             this.gridOptions.data = response.data;
         }.bind(this));
