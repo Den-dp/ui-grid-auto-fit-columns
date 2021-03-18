@@ -1,0 +1,14 @@
+{
+  "name": "ui-grid-auto-fit-columns",
+  "version": "1.1.4",
+  "authors": [
+    "Denis Bendrikov <denis.bendrikov@gmail.com>"
+  ],
+  "description": "The plugin ensures that the column width will be wide enough for showing the longest data of that column (or column name).",
+  "homepage": "https://github.com/Den-dp/ui-grid-auto-fit-columns",
+  "dependencies": {},
+  "main": [
+    "dist/autoFitColumns.js"
+  ],
+  "license": "MIT"
+}
