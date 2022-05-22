@@ -78,7 +78,13 @@ export class UiGridAutoFitColumnsService {
 
             if (column.colDef.enableColumnAutoFit) {
                 const columnKey = column.field || column.name;
-                optimalWidths[columnKey] = Measurer.measureRoundedTextWidth(column.displayName, this.gridMetrics.getHeaderFont()) + this.gridMetrics.getHeaderButtonsWidth();
+
+                let headerText = column.displayName;
+
+                if (!!column.colDef.headerCellFilter) {
+                    headerText = this.getFilteredValue(headerText, column.colDef.headerCellFilter);
+                }
+                optimalWidths[columnKey] = Measurer.measureRoundedTextWidth(headerText, this.gridMetrics.getHeaderFont()) + this.gridMetrics.getHeaderButtonsWidth();
 
                 rows.forEach((row) => {
                     const cellText = row.grid.getCellDisplayValue(row, column);
